@@ -5,7 +5,9 @@
 ## Introdução
 Começaremos com um robô simples, ao qual chamaremos de BailarinaUm.
 A princípio, criaremos um robô da classe "Robot" que simplesmente fica escaneando seus arredores e atira quando encontra um inimigo. Robôs dessa classe possuem uma notável desvantagem: Eles fazem apenas uma coisa por vez, seja mover-se, atirar, girar o chassis, girar a arma ou girar o radar. Considerando que o radar está em cima da arma, e a arma em cima do chassis, um movimento de giro do chassis normalmente<sup>[0]</sup> afeta/gira o veículo todo (incluindo arma e radar); e um giro da arma normalmente<sup>[0]</sup> afeta/gira o radar (mas não afeta o veículo, como seria de se esperar).
-Por enquanto, nosso robô não irá se movimentar. Tudo o que este robô estará fazendo é girar incansavelmente a arma (e consequentemente o radar) a procura de adversários (chamemos este estado de "Girar"). Quando encontrar algum, ele irá parar de girar e começará a simplesmente atirar (chamemos o estado de "Atirar"). Ele irá parar de atirar quando errar algum disparo, e então voltará ao estado "Girar":
+Por enquanto, nosso robô não irá se movimentar.
+
+Tudo o que este robô estará fazendo é girar incansavelmente a arma (e consequentemente o radar) a procura de adversários (chamemos este estado de "Girar"). Quando encontrar algum, ele irá parar de girar e começará a simplesmente atirar (chamemos o estado de "Atirar"). Ele irá parar de atirar quando errar algum disparo, e então voltará ao estado "Girar":
 
 ![BailarinaUm é uma simples máquina de estado](assets/fsm-bailarinaum.png)
 
@@ -150,8 +152,8 @@ Resumidamente, vamos substituir o loop de onScannedRobot por uma instrução par
 
 ```java
 /**
-	* Quando nosso radar escaneia algum robô inimigo.
-	*/
+ * Quando nosso radar escaneia algum robô inimigo.
+ */
 public void onScannedRobot(ScannedRobotEvent e) {
 	// Detectamos um inimigo!
 	// Nesse momento, alteramos o estado do robô para "Atirar"
@@ -240,8 +242,8 @@ public void onScannedRobot(ScannedRobotEvent e) {
 }
 ```
 
-Deixaremos a mágica da detecção dos disparos recebidos a cargo de `onHitByBullet`. Nessa implementação em particular, geramos aleatoriamente a distância e o ângulo que iremos percorrer na fuga (com base em alguns parâmetros limites). Logo após os movimentos, redefinimos o estado do sistema ao passo que forçamos um escaneamento de inimigos (estado "Escanear" da figura).
-	
+Deixaremos a mágica da detecção dos disparos recebidos a cargo de `onHitByBullet`. Nessa implementação em particular, geramos aleatoriamente a distância e o ângulo que iremos percorrer na fuga (com base em alguns parâmetros limites). Logo após os movimentos, redefinimos o estado da máquina ao passo que forçamos um escaneamento de inimigos (estado "Escanear" da figura).
+
 ```java
 /**
  * Quando somos atingidos por um disparo
@@ -270,7 +272,7 @@ public void onHitByBullet(HitByBulletEvent event) {
 }
 ```
 
-Finalmente, é aconselhável que todo robô que execute movimentos (e eles certamente executam) possua alguma implementação para colisões contra os limites do jogo (ou muro). O trecho usado em BailarinaTres é simples: Ao encostar no muro, pare tudo o que está fazendo, gire a frente na direção contrário e ande uma determinada distância. Após isso, volte ao estado "Escanear" da figura.
+Finalmente, é aconselhável que todo robô que execute movimentos (e eles certamente executam) possua alguma implementação para colisões contra os limites do jogo (ou muro). O trecho usado em BailarinaTres é simples: Ao encostar no muro, pare tudo o que está fazendo, rotacione o veículo na direção contrária do muro e ande uma determinada distância. Após isso, volte ao estado "Escanear" da figura.
 
 ```java
 /**
