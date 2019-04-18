@@ -7,66 +7,68 @@ import robocode.util.Utils;
 // API help : https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
 
 /**
- * FujaoUm - a robot by (your name here)
+ * FujaoUm - a robot by VictorKoehler
  */
 public class FujaoUm extends Robot
 {
 	/**
-	 * run: FujaoUm's default behavior
+	 * run: Comportamento padrão de FujaoUm
 	 */
 	public void run() {
-		// Initialization of the robot should be put here
-
-		// After trying out your robot, try uncommenting the import at the top,
-		// and the next line:
-
-		setColors(Color.yellow,Color.yellow,Color.blue); // body,gun,radar
+		setColors(Color.yellow,Color.yellow,Color.blue); // Definimos as cores (chassis, arma e radar)
 		
+		mainLoop();
+	}
 
+	/**
+	 * Nosso loop principal
+	 */
+	private void mainLoop() {
 		while (true) {
-			System.out.println("Novo destino!");
-			
-			Random rand = Utils.getRandom();
-			double height = getBattleFieldHeight();
-			double width = getBattleFieldWidth();
-			double distance = rand.nextDouble() * 600 + 150;
-			double angle = rand.nextDouble() * 60 + 30;
+			// Algumas variáveis de movimento.
+			Random rand = Utils.getRandom(); // Gerador de valores aleatórios
+			double height = getBattleFieldHeight(); // Largura do campo de batalha
+			double width = getBattleFieldWidth(); // Comprimento do campo de batalha
+			double distance = rand.nextDouble() * 600 + 150; // Distância a ser percorrida
+			double angle = rand.nextDouble() * 60 + 30; // Ângulo da rotação
 			
 			if (rand.nextBoolean()) {
-				angle *= -1.0;
+				angle *= -1.0; // Se vamos girar para o lado contrário
 			}
 			if (rand.nextBoolean()) {
-				distance *= -1.0;
+				distance *= -1.0; // Se vamos andar para o lado contrário
 			}
 			
-			turnRight(angle);
-			ahead(distance);
+			turnRight(angle); // Primeiro rotacionamos o tanque
+			scan(); // Escaneamos para verificar a ocorrência de um inimigo na direção
+			ahead(distance); // Depois andamos para frente (para trás caso distance < 0)
+			turnGunLeft(15); // Uma leve rotação para forçar o escaneamento de inimigos.
 		}
 	}
 	
-	//private boolean interrompe = true;
 
 	/**
-	 * onScannedRobot: What to do when you see another robot
+	 * onScannedRobot: Um robô foi detectado pelo radar
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		// Replace the next line with any behavior you would like
-		fire(3);
+		// Vamos simplesmente efetuar um disparo em sua direção
+		fire(4);
+		scan(); // Escaneamos para verificar a ocorrência de um inimigo na direção
 	}
 
 	/**
-	 * onHitByBullet: What to do when you're hit by a bullet
+	 * onHitByBullet: Tanque atingido por um disparo!
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
-		// Replace the next line with any behavior you would like
+		// Recuar!
 		back(400);
 	}
 	
 	/**
-	 * onHitWall: What to do when you hit a wall
+	 * onHitWall: O veículo atingiu um muro enquanto movimentava-se.
 	 */
 	public void onHitWall(HitWallEvent e) {
-		turnRight(-e.getBearing());
-		ahead(300);
-	}	
+		turnRight(-e.getBearing()); // Gira para o lado oposto
+		ahead(300); // Se afasta do muro
+	}
 }
